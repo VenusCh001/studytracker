@@ -3,8 +3,12 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { authLimiter } = require('../middleware/rateLimiter');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+
+// Apply stricter rate limiting to auth routes
+router.use(authLimiter);
 
 // Register a new user
 router.post('/register', async (req, res) => {
@@ -16,8 +20,17 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    // Sanitize inputs - trim whitespace
+    const sanitizedUsername = username.trim();
+    const sanitizedEmail = email.trim().toLowerCase();
+
+    // Check if user already exists using sanitized values
+    const existingUser = await User.findOne({ 
+      $or: [
+        { email: sanitizedEmail }, 
+        { username: sanitizedUsername }
+      ] 
+    });
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists with this email or username' });
     }
@@ -25,10 +38,10 @@ router.post('/register', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
+    // Create new user with sanitized inputs
     const user = new User({
-      username,
-      email,
+      username: sanitizedUsername,
+      email: sanitizedEmail,
       password: hashedPassword
     });
 
@@ -62,8 +75,11 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    // Find user
-    const user = await User.findOne({ email });
+    // Sanitize email input
+    const sanitizedEmail = email.trim().toLowerCase();
+
+    // Find user using sanitized email
+    const user = await User.findOne({ email: sanitizedEmail });
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }

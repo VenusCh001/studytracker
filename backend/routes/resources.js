@@ -12,9 +12,25 @@ router.get('/', async (req, res) => {
     const { type, category, tags } = req.query;
     const filter = { userId: req.userId };
 
-    if (type) filter.type = type;
-    if (category) filter.category = category;
-    if (tags) filter.tags = { $in: tags.split(',') };
+    // Validate query parameters against allowed values
+    const validTypes = ['note', 'link', 'file', 'reference', 'document'];
+    const validCategories = ['lecture-notes', 'reading-material', 'video', 'article', 'book', 'other'];
+
+    if (type && validTypes.includes(type)) {
+      filter.type = type;
+    }
+    if (category && validCategories.includes(category)) {
+      filter.category = category;
+    }
+    if (tags && typeof tags === 'string') {
+      // Sanitize tags - only allow alphanumeric, hyphens, and underscores
+      const sanitizedTags = tags.split(',')
+        .map(tag => tag.trim())
+        .filter(tag => /^[a-zA-Z0-9_-]+$/.test(tag));
+      if (sanitizedTags.length > 0) {
+        filter.tags = { $in: sanitizedTags };
+      }
+    }
 
     const resources = await Resource.find(filter)
       .populate('relatedCourse', 'title')

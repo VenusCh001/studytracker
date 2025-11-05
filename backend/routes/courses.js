@@ -12,8 +12,16 @@ router.get('/', async (req, res) => {
     const { status, platform } = req.query;
     const filter = { userId: req.userId };
 
-    if (status) filter.status = status;
-    if (platform) filter.platform = platform;
+    // Validate query parameters against allowed values
+    const validStatuses = ['not-started', 'in-progress', 'completed', 'paused'];
+    const validPlatforms = ['youtube', 'udemy', 'coursera', 'edx', 'geeksforgeeks', 'custom', 'other'];
+
+    if (status && validStatuses.includes(status)) {
+      filter.status = status;
+    }
+    if (platform && validPlatforms.includes(platform)) {
+      filter.platform = platform;
+    }
 
     const courses = await Course.find(filter).sort({ createdAt: -1 });
     res.json(courses);

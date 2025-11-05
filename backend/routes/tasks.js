@@ -12,9 +12,20 @@ router.get('/', async (req, res) => {
     const { status, priority, type } = req.query;
     const filter = { userId: req.userId };
 
-    if (status) filter.status = status;
-    if (priority) filter.priority = priority;
-    if (type) filter.type = type;
+    // Validate query parameters against allowed values
+    const validStatuses = ['pending', 'in-progress', 'completed', 'overdue'];
+    const validPriorities = ['low', 'medium', 'high', 'urgent'];
+    const validTypes = ['assignment', 'research', 'project', 'online-course', 'general'];
+
+    if (status && validStatuses.includes(status)) {
+      filter.status = status;
+    }
+    if (priority && validPriorities.includes(priority)) {
+      filter.priority = priority;
+    }
+    if (type && validTypes.includes(type)) {
+      filter.type = type;
+    }
 
     const tasks = await Task.find(filter).sort({ dueDate: 1, priority: -1 });
     res.json(tasks);
