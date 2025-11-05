@@ -283,10 +283,15 @@
     </div>
 
     <script>
+        // Get API base URL (use relative path in production, localhost in development)
+        const API_BASE_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:5000/api'
+            : '/api';
+
         // Check API status and load dashboard data
         async function checkAPI() {
             try {
-                const response = await fetch('http://localhost:5000/api/health');
+                const response = await fetch(`${API_BASE_URL}/health`);
                 const data = await response.json();
                 
                 if (data.status === 'ok') {
@@ -303,7 +308,7 @@
 
         async function loadDashboard() {
             try {
-                const response = await fetch('http://localhost:5000/api/dashboard');
+                const response = await fetch(`${API_BASE_URL}/dashboard`);
                 const data = await response.json();
                 
                 if (data.overview) {

@@ -40,7 +40,16 @@ app.get('/api/health', (req, res) => {
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/studytracker';
 
-mongoose.connect(MONGODB_URI)
+// Connection options for production use
+const mongooseOptions = {
+  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+  maxPoolSize: 10, // Maintain up to 10 socket connections
+  minPoolSize: 2, // Maintain at least 2 socket connections
+  bufferCommands: false, // Disable buffering if connection fails
+};
+
+mongoose.connect(MONGODB_URI, mongooseOptions)
 .then(() => console.log('✅ MongoDB connected successfully'))
 .catch((err) => {
   console.warn('⚠️  MongoDB connection error:', err.message);
