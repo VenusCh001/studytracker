@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
     const { status, priority, type } = req.query;
     const filter = { userId: req.userId };
 
-    // Validate query parameters against allowed values
+    // Validate query parameters against allowed values (prevents NoSQL injection)
+    // Only whitelisted values are added to the filter
     const validStatuses = ['pending', 'in-progress', 'completed', 'overdue'];
     const validPriorities = ['low', 'medium', 'high', 'urgent'];
     const validTypes = ['assignment', 'research', 'project', 'online-course', 'general'];
@@ -27,6 +28,7 @@ router.get('/', async (req, res) => {
       filter.type = type;
     }
 
+    // Safe to use: filter values are validated against whitelists
     const tasks = await Task.find(filter).sort({ dueDate: 1, priority: -1 });
     res.json(tasks);
   } catch (error) {

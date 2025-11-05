@@ -325,21 +325,67 @@ npm run build
 npm run preview  # Preview production build
 ```
 
+## 🧪 Testing
+
+### Backend Testing
+The backend includes several security measures:
+- Rate limiting on all API routes
+- Input validation and sanitization
+- NoSQL injection prevention
+- JWT authentication
+
+To test the API:
+```bash
+cd backend
+npm start
+
+# In another terminal, test the health endpoint
+curl http://localhost:5000/health
+```
+
+### Frontend Testing
+```bash
+cd frontend
+npm run dev
+
+# Build for production
+npm run build
+```
+
 ## 🔮 Future Enhancements
 
-- [ ] AI-Powered Roadmaps & Scheduling
+### Phase 2 - Enhanced Features
 - [ ] Auto-Fetch from Learning Platforms (YouTube API integration)
+- [ ] Course metadata extraction from URLs
+- [ ] Advanced search and filtering
+- [ ] Export data (CSV, PDF)
+- [ ] Dark mode support
+
+### Phase 3 - AI & Productivity
+- [ ] AI-Powered Roadmaps & Scheduling
 - [ ] Focus & Well-Being Mode (Pomodoro timer)
 - [ ] Mood tracking insights
+- [ ] Smart task prioritization
+- [ ] Predicted delays and workload balancing
+
+### Phase 4 - Collaboration & Mobile
 - [ ] Collaboration features (shared projects)
 - [ ] Push notifications (Firebase Cloud Messaging)
-- [ ] File upload support
+- [ ] File upload support with cloud storage
 - [ ] Advanced analytics and charts
 - [ ] Mobile app (React Native)
+- [ ] Real-time collaboration
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+### Development Guidelines
+1. Follow existing code style and patterns
+2. Add comments for complex logic
+3. Test your changes thoroughly
+4. Update documentation as needed
+5. Ensure security best practices
 
 ## 📝 License
 

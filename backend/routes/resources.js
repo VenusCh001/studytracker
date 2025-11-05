@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
     const { type, category, tags } = req.query;
     const filter = { userId: req.userId };
 
-    // Validate query parameters against allowed values
+    // Validate query parameters against allowed values (prevents NoSQL injection)
+    // Only whitelisted values are added to the filter
     const validTypes = ['note', 'link', 'file', 'reference', 'document'];
     const validCategories = ['lecture-notes', 'reading-material', 'video', 'article', 'book', 'other'];
 
@@ -32,6 +33,7 @@ router.get('/', async (req, res) => {
       }
     }
 
+    // Safe to use: filter values are validated against whitelists and regex patterns
     const resources = await Resource.find(filter)
       .populate('relatedCourse', 'title')
       .populate('relatedTask', 'title')

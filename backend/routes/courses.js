@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
     const { status, platform } = req.query;
     const filter = { userId: req.userId };
 
-    // Validate query parameters against allowed values
+    // Validate query parameters against allowed values (prevents NoSQL injection)
+    // Only whitelisted values are added to the filter
     const validStatuses = ['not-started', 'in-progress', 'completed', 'paused'];
     const validPlatforms = ['youtube', 'udemy', 'coursera', 'edx', 'geeksforgeeks', 'custom', 'other'];
 
@@ -23,6 +24,7 @@ router.get('/', async (req, res) => {
       filter.platform = platform;
     }
 
+    // Safe to use: filter values are validated against whitelists
     const courses = await Course.find(filter).sort({ createdAt: -1 });
     res.json(courses);
   } catch (error) {
