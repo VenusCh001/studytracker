@@ -1,0 +1,25 @@
+{
+  "name": "studytracker",
+  "version": "1.0.0",
+  "description": "StudyTrackr - Smart academic life-management app for students",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "test": "echo \"No tests specified yet\" && exit 0"
+  },
+  "keywords": ["education", "student", "academic", "study", "tracking", "assignments", "courses"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
