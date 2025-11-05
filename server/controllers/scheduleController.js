@@ -1,5 +1,10 @@
 const Assignment = require('../models/Assignment');
 const Course = require('../models/Course');
+const { mockAssignments } = require('../config/mockData');
+const mongoose = require('mongoose');
+
+// Check if MongoDB is connected
+const isMongoConnected = () => mongoose.connection.readyState === 1;
 
 // AI-based scheduling (mock implementation)
 exports.generateSchedule = async (req, res) => {
@@ -7,9 +12,15 @@ exports.generateSchedule = async (req, res) => {
     const { preferences } = req.body;
     
     // Get all pending assignments
-    const assignments = await Assignment.find({
-      status: { $in: ['pending', 'in-progress'] }
-    }).populate('course').sort({ dueDate: 1 });
+    let assignments;
+    if (!isMongoConnected()) {
+      // Use mock data
+      assignments = mockAssignments.filter(a => a.status === 'pending' || a.status === 'in-progress');
+    } else {
+      assignments = await Assignment.find({
+        status: { $in: ['pending', 'in-progress'] }
+      }).populate('course').sort({ dueDate: 1 });
+    }
     
     // Mock AI scheduling algorithm
     const schedule = [];
@@ -95,9 +106,15 @@ exports.getOptimalStudyTimes = async (req, res) => {
 // Smart task prioritization
 exports.prioritizeTasks = async (req, res) => {
   try {
-    const assignments = await Assignment.find({
-      status: { $in: ['pending', 'in-progress'] }
-    }).populate('course');
+    let assignments;
+    if (!isMongoConnected()) {
+      // Use mock data
+      assignments = mockAssignments.filter(a => a.status === 'pending' || a.status === 'in-progress');
+    } else {
+      assignments = await Assignment.find({
+        status: { $in: ['pending', 'in-progress'] }
+      }).populate('course');
+    }
     
     // Mock AI prioritization algorithm
     const prioritized = assignments.map(assignment => {
