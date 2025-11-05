@@ -268,12 +268,33 @@ studytracker/
 
 ## 🔐 Security Features
 
-- Password hashing with bcryptjs
-- JWT-based authentication
-- Protected API routes
-- Input validation
-- CORS configuration
-- Secure HTTP headers
+- Password hashing with bcryptjs (10 rounds)
+- JWT-based authentication with 7-day token expiration
+- Protected API routes with authentication middleware
+- Input validation on Mongoose models
+- CORS configuration for cross-origin requests
+- Environment-specific database separation (dev/prod)
+
+### Security Considerations
+
+**Authentication Token Storage**
+- Current implementation uses localStorage for JWT tokens
+- For production deployment, consider:
+  - Implementing httpOnly cookies for enhanced XSS protection
+  - Token rotation and refresh token mechanism
+  - Shorter token expiration times
+  - Content Security Policy (CSP) headers
+
+**Database Security**
+- Always use environment variables for sensitive configuration
+- Different database names for development and production
+- Enable MongoDB authentication in production
+- Use connection string encryption
+
+**Password Security**
+- Minimum 6 characters required (configurable in User model)
+- Bcrypt hashing with salt rounds
+- Consider adding password complexity requirements for production
 
 ## 🚦 Development
 

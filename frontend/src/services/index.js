@@ -1,5 +1,8 @@
 import api from './api';
 
+// NOTE: Using localStorage for token storage.
+// For production, consider using httpOnly cookies for enhanced security against XSS attacks.
+// Implement additional security measures like token rotation and short expiration times.
 export const authService = {
   async login(email, password) {
     const response = await api.post('/auth/login', { email, password });
